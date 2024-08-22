@@ -1,0 +1,5 @@
+ddginternal
+groq
+fastapi
+uvicorn
+python-dotenv

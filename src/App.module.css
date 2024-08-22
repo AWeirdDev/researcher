@@ -1,0 +1,116 @@
+.title {
+    font-family: "Inter Tight", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 28px;
+    color: rgb(39, 39, 39);
+    transition: all 300ms ease;
+}
+
+.input {
+    width: 100%;
+    height: 44px;
+    padding-top: 16px;
+    font-family: "Inter Tight", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 18px;
+    color: black;
+    border: none;
+    outline: none;
+    transition: all 500ms cubic-bezier(.4, 0, .2, 1);
+}
+
+.input::placeholder,
+.input::-webkit-input-placeholder,
+.input:-moz-placeholder,
+.input::-moz-placeholder,
+.input:-ms-input-placeholder {
+    color: var(--secondary-text);
+    font-weight: 600;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    position: relative;
+    padding: 0 30%;
+}
+
+.messagesWrapper {
+    position: absolute;
+    top: 0;
+    transform: translateY(60px);
+    padding-right: 30%;
+    /* tell it that there's a 30% boundary */
+    overflow-y: auto;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 14px;
+    margin-left: auto;
+    height: calc(100vh - 60px * 3);
+}
+
+@keyframes message-show {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+        filter: blur(10px);
+        -webkit-filter: blur(10px);
+    }
+
+    to {
+        translate: translateY(0px);
+        opacity: 1;
+        filter: blur(0px);
+        -webkit-filter: blur(0px);
+    }
+}
+
+@keyframes move-bg {
+    50% {
+        background-position: var(--bg-size) 0;
+    }
+
+    100% {
+        color: black;
+        opacity: 0.5;
+    }
+}
+
+.userMessage {
+    display: block;
+    --bg-size: 200%;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 24px;
+    margin-left: auto;
+    animation: 500ms ease message-show forwards, move-bg 1.5s forwards linear;
+    background: linear-gradient(108deg, #0894FF, #FF2E54, #FF9004, #FF2E54, #0894FF) 0 0 / var(--bg-size) 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.aiMessage {
+    display: block;
+    font-family: "Inter Tight", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    margin-left: auto;
+    padding-top: 14px;
+    padding-bottom: 32px;
+    font-size: 24px;
+    color: black;
+    animation: 500ms ease message-show forwards;
+}
