@@ -75,7 +75,7 @@
     }
 }
 
-@keyframes move-bg {
+@keyframes move-bg-user-msg {
     50% {
         background-position: var(--bg-size) 0;
     }
@@ -95,7 +95,7 @@
     font-style: normal;
     font-size: 24px;
     margin-left: auto;
-    animation: 500ms ease message-show forwards, move-bg 1.5s forwards linear;
+    animation: 500ms ease message-show forwards, move-bg-user-msg 1.5s forwards linear;
     background: linear-gradient(108deg, #0894FF, #FF2E54, #FF9004, #FF2E54, #0894FF) 0 0 / var(--bg-size) 100%;
     color: transparent;
     -webkit-background-clip: text;
@@ -113,4 +113,19 @@
     font-size: 24px;
     color: black;
     animation: 500ms ease message-show forwards;
+}
+
+@keyframes move-bg-ai-msg {
+    to {
+        background-position: var(--bg-size) 0;
+    }
+}
+
+.aiMessage[data-loading="true"] {
+    --bg-size: 200%;
+    animation: 500ms ease message-show forwards, move-bg-ai-msg 5s infinite linear;
+    background: linear-gradient(90deg, #0894FF, #FF2E54, #FF9004, #FF2E54, #0894FF) 0 0 / var(--bg-size) 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
 }

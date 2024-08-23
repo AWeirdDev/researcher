@@ -1,11 +1,18 @@
 import cx from "./App.module.css";
 import { useState } from "react";
+import { useStateWithAsyncCallback } from "./useStateWithCallback";
 
 import ScrollToBottom from "react-scroll-to-bottom";
 
 import { ai } from "./useAi";
 
 interface Conversation {
+  role: 'user' | 'assistant',
+  content: string,
+  flags?: 'loading'
+}
+
+interface ConversationPayload {
   role: 'user' | 'assistant',
   content: string,
 }
@@ -18,10 +25,10 @@ function UserMessage({ content }: { content: string }) {
   )
 }
 
-function AIMessage({ content }: { content: string }) {
+function AIMessage({ content, loading }: { content: string, loading?: boolean }) {
   return (
     <div>
-      <p className={cx.aiMessage}>{content}</p>
+      <p className={cx.aiMessage} data-loading={loading}>{content}</p>
     </div>
   )
 }
@@ -30,7 +37,9 @@ export default function App() {
   const [landing, setLanding] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [conversation, setConversation] = useState<Conversation[]>([]);
+  const [conversation, setConversation] = useStateWithAsyncCallback<Conversation[]>([]);
+  const [convPayload, setConvPayload] = useStateWithAsyncCallback<ConversationPayload[]>([]);
+
   const [input, setInput] = useState<string>("");
 
   return (
@@ -40,13 +49,13 @@ export default function App() {
           <div className={cx.messagesWrapper}>
             <ScrollToBottom className={cx.messages}>
               {
-                conversation.map(({ role, content }, idx) => (
+                conversation.map(({ role, content, flags }, idx) => (
                   role == "user"
                     ? (
                       <UserMessage content={content} key={idx} />
                     )
                     : (
-                      <AIMessage content={content} key={idx} />
+                      <AIMessage content={content} key={idx} loading={flags == 'loading'} />
                     )
                 ))
               }
@@ -81,8 +90,31 @@ export default function App() {
               setLoading(true);
               setTimeout(() => {
                 async function runner() {
-                  let result = await ai([...conversation, { role: "user", content: input }]);
-                  setConversation(conv => [...conv, { role: 'assistant', content: result }]);
+                  let mConv: Conversation[] = [...conversation, { role: "user", content: input }];
+                  let mConvPayload: ConversationPayload[] = [...convPayload, { role: "user", content: input }];
+
+                  for await (const result of ai(mConvPayload)) {
+                    console.log(result);
+
+                    if (mConv.length > 0 && mConv[mConv.length - 1].role == "assistant" && mConv[mConv.length - 1].flags == 'loading') {
+                      mConv = await setConversation(mConv.slice(0, -1));
+                    }
+
+                    if (!result.background)
+                      mConv = await setConversation(
+                        [
+                          ...mConv,
+                          { role: "assistant", content: result['content'], flags: result['done'] ? undefined : 'loading' }
+                        ]
+                      );
+
+                    mConvPayload = await setConvPayload(
+                      [
+                        ...mConvPayload,
+                        { role: result.background ? "user" : "assistant", content: result['content'] }
+                      ]
+                    )
+                  }
                   setLoading(false)
                 }
                 runner();
