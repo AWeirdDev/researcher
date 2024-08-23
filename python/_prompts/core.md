@@ -25,6 +25,7 @@ For longer answers that may consist of Markdown components, use the type "long."
   ]
 }
 ```
+REMEMBER: For the last item of "long_answer," NEVER add a comma after it, otherwise the JSON will be invalid.
 
 ## Searching the internet
 You can look things up on the internet with the type "search" along with the "query." You MUST NOT maniuplate/generate the results. The system will provide the results. You MUST NOT use the type "long" or "short" here.

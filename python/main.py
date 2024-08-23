@@ -57,7 +57,8 @@ def parse_messages(messages: List[Message]) -> List[dict]:
                                 if is_long
                                 else {"answer": message.content.strip()}
                             ),
-                        }
+                        },
+                        indent=2
                     ),
                 }
             )
@@ -71,7 +72,7 @@ def parse_messages(messages: List[Message]) -> List[dict]:
 async def conversation(req: Request):
     async def ai(messages: list) -> dict:
         res = await groq.chat.completions.create(
-            model="llama3-70b-8192",
+            model="llama3-8b-8192",
             messages=[
                 {
                     "role": "system",
